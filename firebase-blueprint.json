@@ -1,0 +1,190 @@
+{
+  "entities": {
+    "allowed_users": {
+      "title": "Allowed Users (Whitelist)",
+      "description": "Daftar email dan pengguna yang memiliki izin akses ke web aplikasi dan ekstensi scraper",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Alamat email terdaftar pengguna"
+        },
+        "name": {
+          "type": "string",
+          "description": "Nama lengkap anggota tim"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["admin", "member"],
+          "description": "Peran pengguna (admin atau member)"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "suspended"],
+          "description": "Status keaktifan akses"
+        },
+        "licenseKey": {
+          "type": "string",
+          "description": "Kunci lisensi akses unik untuk ekstensi Chrome"
+        },
+        "addedBy": {
+          "type": "string",
+          "description": "Email admin yang menambahkan"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Waktu pendaftaran anggota"
+        },
+        "lastLoginAt": {
+          "type": "string",
+          "description": "Waktu terakhir login"
+        }
+      },
+      "required": ["email", "role", "status"]
+    },
+    "cloud_leads": {
+      "title": "Cloud Shared Leads",
+      "description": "Database prospek bisnis Google Maps yang disinkronkan antar anggota tim",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID unik prospek"
+        },
+        "name": {
+          "type": "string",
+          "description": "Nama tempat / bisnis"
+        },
+        "category": {
+          "type": "string",
+          "description": "Kategori usaha"
+        },
+        "city": {
+          "type": "string",
+          "description": "Kota lokasi bisnis"
+        },
+        "address": {
+          "type": "string",
+          "description": "Alamat lengkap"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Nomor telepon kontak"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Rating Google Maps"
+        },
+        "reviewCount": {
+          "type": "number",
+          "description": "Jumlah ulasan"
+        },
+        "hasOfficialWebsite": {
+          "type": "boolean",
+          "description": "Status kepemilikan website resmi"
+        },
+        "detectedWebsite": {
+          "type": "string",
+          "description": "URL website terdeteksi"
+        },
+        "isMedicalLead": {
+          "type": "boolean",
+          "description": "Penanda kategori klinik/medis"
+        },
+        "contactStatus": {
+          "type": "string",
+          "enum": ["new", "contacted", "interested", "not_interested", "deal"],
+          "description": "Status proses outreach sales"
+        },
+        "scrapedBy": {
+          "type": "string",
+          "description": "Email anggota tim yang mengekstrak data"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Catatan khusus tim"
+        },
+        "mapsUrl": {
+          "type": "string",
+          "description": "Tautan ke Google Maps"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Waktu pembaruan terakhir"
+        }
+      },
+      "required": ["name", "mapsUrl"]
+    },
+    "system_settings": {
+      "title": "System Settings",
+      "description": "Pengaturan sistem global termasuk nomor WhatsApp administrator",
+      "properties": {
+        "whatsappPhone": {
+          "type": "string",
+          "description": "Nomor WhatsApp admin yang menerima permohonan lisensi"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Waktu pembaruan konfigurasi"
+        },
+        "updatedBy": {
+          "type": "string",
+          "description": "Email akun admin yang melakukan pembaruan"
+        }
+      },
+      "required": ["whatsappPhone"]
+    },
+    "license_requests": {
+      "title": "License Requests",
+      "description": "Permohonan kunci lisensi dan bantuan lupa kode dari member",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID unik permohonan"
+        },
+        "email": {
+          "type": "string",
+          "description": "Email pemohon"
+        },
+        "name": {
+          "type": "string",
+          "description": "Nama pemohon"
+        },
+        "whatsappPhone": {
+          "type": "string",
+          "description": "Nomor WhatsApp pemohon untuk pengiriman lisensi"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Alasan atau keterangan permohonan"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "approved", "rejected"],
+          "description": "Status permohonan"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Waktu permohonan diajukan"
+        }
+      },
+      "required": ["email", "status"]
+    }
+  },
+  "firestore": {
+    "/allowed_users/{userId}": {
+      "schema": "allowed_users",
+      "description": "Daftar email yang di-whitelist"
+    },
+    "/cloud_leads/{leadId}": {
+      "schema": "cloud_leads",
+      "description": "Koleksi data prospek tersinkronisasi cloud"
+    },
+    "/system_settings/{settingId}": {
+      "schema": "system_settings",
+      "description": "Pengaturan sistem global"
+    },
+    "/license_requests/{requestId}": {
+      "schema": "license_requests",
+      "description": "Permohonan lisensi dari anggota tim"
+    }
+  }
+}

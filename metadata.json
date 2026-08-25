@@ -1,0 +1,8 @@
+{
+  "name": "Remix Remix Google Maps Lead Scraper \u0026 Chrome Extension Builder",
+  "description": "Ekstensi Chrome \u0026 Generator Ekstraktor Google Maps untuk menyaring bisnis tanpa website resmi dengan ekspor CSV instan dan pelacak progres.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

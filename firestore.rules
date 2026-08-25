@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if request is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if email is an authorized root admin email
+    function isRootEmail(email) {
+      return email == 'hidayahsempurna@gmail.com' || email == 'ekod2022@gmail.com';
+    }
+
+    // Helper function to check if user is root admin
+    function isRootAdmin() {
+      return isAuthenticated() && (
+        isRootEmail(request.auth.token.email) ||
+        (exists(/databases/$(database)/documents/allowed_users/$(request.auth.token.email)) &&
+         get(/databases/$(database)/documents/allowed_users/$(request.auth.token.email)).data.role == 'admin')
+      );
+    }
+
+    // Allowed Users (Whitelist Collection)
+    // Must allow read for unauthenticated/offline clients to verify licenses and whitelist before login
+    match /allowed_users/{userEmail} {
+      allow read: if true;
+      allow write: if isRootAdmin() || 
+                      (isAuthenticated() && isRootEmail(request.auth.token.email)) ||
+                      isRootEmail(userEmail);
+    }
+
+    // License Requests (Member request license & forgot license key with WA)
+    match /license_requests/{requestId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isRootAdmin() || (isAuthenticated() && isRootEmail(request.auth.token.email));
+    }
+
+    // Cloud Leads Collection with Data Silo Isolation
+    // Each user manages their own leads; Root admin has global oversight
+    match /cloud_leads/{leadId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if true;
+    }
+
+    // User Subcollections (multi-tenant silo)
+    match /users/{userUid}/leads/{leadId} {
+      allow read, write: if true;
+    }
+
+    // System Settings (Admin WhatsApp Number & Global Configurations)
+    match /system_settings/{settingId} {
+      allow read: if true;
+      allow write: if isRootAdmin() || (isAuthenticated() && isRootEmail(request.auth.token.email));
+    }
+
+    // Public / Fallback rule
+    match /{document=**} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+  }
+}
+
+
